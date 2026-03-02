@@ -56,4 +56,4 @@ jobs:
         script: |
           docker stop conexoes
           docker rm --force conexoes
-          docker run  -d -p 8080:8080 --network=rede --name conexoes souzx/conexoes-ci:${{ github.sha }}
+          docker run  -d -p 8080:8080 -e MONGO_URL=${{ secrets.MONGO_URL }} --network=rede --name conexoes souzx/conexoes-ci:${{ github.sha }}
