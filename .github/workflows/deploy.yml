@@ -45,7 +45,7 @@ jobs:
         context: .
         file: ./Dockerfile
         push: true
-        tags: souzx/connections-ci:${{ github.sha }}
+        tags: souzx/conexoes-ci:${{ github.sha }}
     - name: executing remote ssh commands using password
       uses: appleboy/ssh-action@master
       with:
