@@ -15,6 +15,7 @@ public class UserClient {
 
     public boolean userExists(String id) {
         try {
+            System.out.println(userUrl + "/users/" + id);
             RestTemplate restTemplate = new RestTemplate();
             ResponseEntity<UserResponse> user =
                     restTemplate.getForEntity(userUrl + "/users/"
@@ -24,6 +25,7 @@ public class UserClient {
             System.out.println("User not found");
             return false;
         } catch (Exception e) {
+            e.printStackTrace();
             System.out.println("Error inesperado");
             return false;
         }
