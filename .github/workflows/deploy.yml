@@ -67,3 +67,4 @@ jobs:
               --network=rede \
               --name ${{ env.CONTAINER_NAME }} \
               ${{ env.DOCKER_IMAGE }}:${{ github.sha }}
+
