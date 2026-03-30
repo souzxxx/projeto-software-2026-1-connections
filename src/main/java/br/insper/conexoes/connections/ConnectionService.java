@@ -5,13 +5,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
 public class ConnectionService {
 
-    private final ConnectionRepository repository;
+    @Autowired
+    private ConnectionRepository repository;
 
     @Autowired
     private EventProducer eventProducer;
@@ -19,9 +19,6 @@ public class ConnectionService {
     @Autowired
     private UserClient userClient;
 
-    public ConnectionService(ConnectionRepository repository) {
-        this.repository = repository;
-    }
 
     public Connection create(String fromUserId, String toUserId) {
 
