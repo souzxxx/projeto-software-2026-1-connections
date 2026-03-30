@@ -5,6 +5,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.web.server.ResponseStatusException;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -51,6 +52,22 @@ class ConnectionServiceTest {
     }
 
     // createShouldThrowNotFoundWhenFromUserDoesNotExist
+    @Test
+    void create_shouldThrowNotFoundWhenFromUserDoesNotExist() {
+        String fromUserId = "user1";
+        String toUserId = "user2";
+
+        when(userClient.userExists(fromUserId)).thenReturn(false);
+
+        assertThrows(ResponseStatusException.class, () -> {
+            connectionService.create(fromUserId, toUserId);
+        });
+
+        verify(userClient).userExists(fromUserId);
+        verify(userClient, never()).userExists(toUserId);
+        verify(eventProducer, never()).send(any(Event.class));
+        verify(repository, never()).save(any(Connection.class));
+    }
     // createShouldThrowNotFoundWhenToUserDoesNotExist
     // listByUserShouldReturnConnectionsAndSendEvent
     // deleteShouldSendEventAndRemoveConnection
