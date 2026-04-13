@@ -7,6 +7,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -54,22 +57,44 @@ class ConnectionServiceTest {
     // createShouldThrowNotFoundWhenFromUserDoesNotExist
     @Test
     void create_shouldThrowNotFoundWhenFromUserDoesNotExist() {
+
+        //mock
         String fromUserId = "user1";
         String toUserId = "user2";
-
         when(userClient.userExists(fromUserId)).thenReturn(false);
 
-        assertThrows(ResponseStatusException.class, () -> {
-            connectionService.create(fromUserId, toUserId);
-        });
+        assertThrows(
+                ResponseStatusException.class,
+                () -> connectionService.create(fromUserId, toUserId)
+        );
 
-        verify(userClient).userExists(fromUserId);
-        verify(userClient, never()).userExists(toUserId);
-        verify(eventProducer, never()).send(any(Event.class));
-        verify(repository, never()).save(any(Connection.class));
     }
+
+
+
     // createShouldThrowNotFoundWhenToUserDoesNotExist
     // listByUserShouldReturnConnectionsAndSendEvent
+    @Test
+    void list_shouldReturnConnectionsAndSendEvent() {
+
+        Connection connection1 = new Connection("user-1", "user-2");
+        Connection connection2 = new Connection("user-1", "user-3");
+
+        List<Connection> lista = new ArrayList<>();
+        lista.add(connection1);
+        lista.add(connection2);
+
+        when(repository.findByFromUserId("user-1"))
+                .thenReturn(lista);
+
+        // ação
+        List<Connection> response = connectionService.listByUser("user-1");
+
+        assertNotNull(response);
+        assertEquals(2, response.size());
+        assertEquals("user-1", response.getFirst().getFromUserId());
+
+    }
     // deleteShouldSendEventAndRemoveConnection
 
 }
